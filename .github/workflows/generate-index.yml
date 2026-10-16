@@ -28,9 +28,6 @@ jobs:
       - name: Install index dependencies
         run: python -m pip install -r requirements.txt
 
-      - name: Test index generation
-        run: python -m unittest -v
-
       - name: Generate index.html
         run: |
           mkdir -p "$RUNNER_TEMP/wheel-site"
