@@ -5,6 +5,7 @@ name: Generate Index
   push:
     branches:
       - main
+  workflow_dispatch:
 
 # Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
 permissions:
@@ -20,16 +21,26 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
 
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install index dependencies
+        run: python -m pip install -r requirements.txt
+
+      - name: Test index generation
+        run: python -m unittest -v
+
       - name: Generate index.html
         run: |
-          mkdir output
-          python generate_index.py > output/index.html
-          cp *.whl output
+          mkdir -p "$RUNNER_TEMP/wheel-site"
+          python generate_index.py > "$RUNNER_TEMP/wheel-site/index.html"
+          find . -type f -name '*.whl' -exec cp --parents '{}' "$RUNNER_TEMP/wheel-site/" \;
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: output
+          path: ${{ runner.temp }}/wheel-site
 
       - name: Deploy to GitHub Pages
         id: deployment

@@ -22,6 +22,19 @@ await micropip.install("https://ifcopenshell.github.io/wasm-wheels/ifcopenshell-
 
 Replace the URL with the desired wheel filename from the index.
 
+## Generating the index locally
+
+```sh
+python -m pip install -r requirements.txt
+python -m unittest -v
+python generate_index.py > index.html
+```
+
+The index lists wheels in one table with a version column. Only modular wheel
+directories get a parent row and indented entries. Download URLs retain the full relative
+path, so nested wheels with the same filename remain distinct. The Pages workflow
+copies all wheels recursively with the same directory structure.
+
 ## Alternatives Considered
 
 Other hosting options were considered:
